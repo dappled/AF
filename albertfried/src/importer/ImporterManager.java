@@ -31,8 +31,7 @@ public class ImporterManager {
 				case "/brokerFile":
 					ImporterManager._brokerFile = args[ ++i ];
 					if (ImporterManager._brokerFile.startsWith( "c:\\" )) {
-						ImporterManager._brokerFile = ImporterManager._brokerFile.replace( "[yyyyMMdd]",
-								ParseDate.yyyyMMddFromStandard( ParseDate.yesterday ) );
+						ImporterManager._brokerFile = ImporterManager._brokerFile.replace( "[yyyyMMdd]",ParseDate.yyyyMMddFromStandard( ParseDate.yesterday ) );
 					}
 					break;
 				case "/dbName":
@@ -63,6 +62,10 @@ public class ImporterManager {
 					// broker trade 
 					else if (args[i].equals( "brokerTrade")) {
 						_importer = new BrokerTradeImporter(_dbServer, _catalog);
+					}
+					// consolidated trade blotter
+					else if (args[i].equals( "consolidated" )) {
+						_importer = new ConsolidatedImporter(_dbServer, _catalog);
 					}
 					else throw new Exception( "ImporterManager: /type argument unsopported: " + args[i] );
 					break;
