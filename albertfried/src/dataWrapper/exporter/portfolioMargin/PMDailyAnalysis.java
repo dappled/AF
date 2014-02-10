@@ -16,18 +16,18 @@ import utils.StringUtils;
  * @author Zhenghong Dong
  */
 public class PMDailyAnalysis extends PMAbstract {
-	private final float					_requirement;
-	private final float					_risk;
+	private final double				_requirement;
+	private final double				_risk;
 	private final List<PMDailyDetail>	_details;
 	private int							_movementIdx		= -1;
 	private String						_reason				= "";
 	private boolean						_isAnalysized		= false;
-	private float[]						_movements			= { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-	private float						_totalContractQty	= 0;
-	private float						_totalStockQty		= 0;
+	private double[]					_movements			= { 0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d };
+	private double						_totalContractQty	= 0d;
+	private double						_totalStockQty		= 0d;
 	private List<String>				_ticker;
 
-	public PMDailyAnalysis(String date, String symbol, float requirement, float risk) {
+	public PMDailyAnalysis(String date, String symbol, double requirement, double risk) {
 		super( date, symbol );
 		_ticker = new ArrayList<>();
 		_requirement = requirement;
@@ -41,7 +41,6 @@ public class PMDailyAnalysis extends PMAbstract {
 		addMovements( record );
 		addQuantity( record );
 	}
-
 
 	private void addTicker(PMDailyDetail record) {
 		_ticker.add( record.getTicker() );
@@ -66,7 +65,7 @@ public class PMDailyAnalysis extends PMAbstract {
 		if (_isAnalysized) return;
 		else {
 			// if requirement == risk, reason of large risk is from one of the 10 movements
-			if (_requirement == _risk) {
+			if (_requirement == _risk ) {
 				for (int i = 0; i < _movements.length; i++) {
 					if (_movements[ i ] == -1 * _requirement) {
 						_movementIdx = i;
@@ -132,7 +131,7 @@ public class PMDailyAnalysis extends PMAbstract {
 		}
 	}
 
-	public float getRequirement() {
+	public double getRequirement() {
 		return _requirement;
 	}
 

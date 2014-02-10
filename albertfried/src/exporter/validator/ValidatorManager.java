@@ -10,15 +10,16 @@ public class ValidatorManager {
 	private static ValidatorBase	_validator;
 	// used for database search, database imported date will always be at today's date ( since they are imported every
 	// 5:00 AM ), but they are indeed yesterday's data.
-	// Update: "today"'s date should be the day after yesterday, so we can test on Monday for last day, however, this pr
+	// Update: "today"'s date should be the day after last non holiday weekday, so on Monday last day is Friday if Friday is not holiday
 	private static String			_date;
 	private static String			_mailSubject;
 	private static String			_dbServer;
 	private static String			_catalog;
 	private static boolean			_wipe			= false;
-	private static boolean 			_test 			= false;
 
 	public static void main(final String[] args) throws Exception {
+		// don't export on holiday, b/c it will be exported next weekday
+		if (ParseDate.isHoliday( ParseDate.today) ) return;
 		ValidatorManager.parseArgs( args );
 		// System.out.println(reader.getDate(gsFile));
 		ValidatorManager._validator
@@ -38,9 +39,6 @@ public class ValidatorManager {
 	private static void parseArgs(final String[] args) throws Exception {
 		for (int i = 0; i < args.length; i++) {
 			switch (args[ i ]) {
-				case "/test":
-					_test = true;
-					break;
 				case "/mail":
 					ValidatorManager._addressList = args[ ++i ];
 					break;
@@ -81,8 +79,7 @@ public class ValidatorManager {
 						ValidatorManager._mailSubject = "ActivityMismatchReport";
 					}
 					else if (args[ i ].equals( "position" )) {
-						if (_test) _date = ParseDate.testToday;
-						else _date = ParseDate.today;
+						_date = ParseDate.today;
 						ValidatorManager._validator = new PositionValidator( _dbServer, _catalog );
 						ValidatorManager._mailSubject = "PostitionMismatchReport";
 					} else throw new Exception( "ValidatorManager: /type argument inapproporiate" );

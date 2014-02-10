@@ -15,16 +15,13 @@ import org.joda.time.format.DateTimeFormatter;
  */
 public class ParseDate {
 	// last working day
-	public static String	yesterday		= getPreviousWorkingDay( standardFromDate( new Date() ) );
-	// today should be the next day of yesterday.. this is for test only, if we want to run some test on Monday for last
-	// friday's report, which should be generated last Saturday, today is then last Saturday which is one day after
-	// yesterday but not real today.
-	// However, we won't never generate report on Monday morning, they should be generated last Saturday.
-	public static String	testToday		= getNextWorkingDay( yesterday );
+	public static String	yesterday			= getPreviousWorkingDay( standardFromDate( new Date() ) );
+	// day after yesterday might not be today cuz yesterday is last working day. think about today is Monday
+	public static String	dayAfterYesterday	= getNextDay( yesterday );
 	// today's date, usually used as importDate in database
-	public static String	today			= standardFromDate( new Date() );
+	public static String	today				= standardFromDate( new Date() );
 	// two business days later
-	public static String	twoDaysLater	= getNextWorkingDay( getNextWorkingDay( standardFromDate( new Date() ) ) );
+	public static String	twoDaysLater		= getNextWorkingDay( getNextWorkingDay( standardFromDate( new Date() ) ) );
 
 	/**
 	 * Compare two string date in standard format
@@ -120,7 +117,7 @@ public class ParseDate {
 	 * @throws Exception
 	 */
 	public static String standardFromyyyyBMMBdddd(final String date) {
-		if (date == null || date.equals( "null" )) return date;
+		if (date == null || date.equals( "null" ) || date.equals( "" )) return date;
 		try {
 			return ParseDate.standardFromyyyyMMdd( date.replace( "-", "" ) );
 		} catch (final Exception e) {
@@ -163,6 +160,20 @@ public class ParseDate {
 	 */
 	public static String standardFromCal(Calendar calendar) {
 		return standardFromDate( calendar.getTime() );
+	}
+	
+	/**
+	 * Given a {@link Date}, convert it to String format MM/dd/yyyy
+	 * @param date
+	 * @return
+	 */
+	public static String standardFromDate(final Date date) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime( date );
+
+		return String.format( "%s/%s/%d", fillDigitalString( cal.get( Calendar.MONTH ) + 1 ),
+				fillDigitalString( cal.get( Calendar.DATE ) ),
+				cal.get( Calendar.YEAR ) );
 	}
 	
 	/**
@@ -216,6 +227,34 @@ public class ParseDate {
 	}
 
 	/**
+	 * Given a standard date string, return the SQL Date representation
+	 * @param standardFromyyyyMMdd
+	 * @return
+	 */
+	public static java.sql.Date SQLDateFromStandard(String date) {
+		if (date == null || date.equals( "" )) return null;
+		else return (java.sql.Date.valueOf( ParseDate.yyyyBMMBddddFromStandard( date )));
+	}
+	
+	/**
+	 * Convert date string from MM/dd/yyyy to yyyy-MM-dd, typically used for java.sql.date
+	 * @param date
+	 * @return
+	 * @throws Exception
+	 */
+	public static String yyyyBMMBddddFromStandard(final String date) {
+		if (date == null || date.equals( "null" )) return date;
+		try {
+			String ret = ParseDate.yyyyMMddFromStandard( date );
+			return ret.substring( 0, 4 ) + "-" + ret.substring( 4,6 ) + "-" + ret.substring( 6, 8 );
+		} catch (final Exception e) {
+			e.printStackTrace();
+			System.err.printf( "Failed to parse date to MM/dd/yyyy from %s, will return empty string\n", date );
+			return "";
+		}
+	}
+	
+	/**
 	 * Simply convert month string to digital form
 	 * @param month String
 	 * @return month number
@@ -229,13 +268,18 @@ public class ParseDate {
 	}
 
 	/**
-	 * Given a Java calendar, convert it to String format MM/dd/yyyy
+	 * Return the next day that is not holiday of a certain day in format MM/dd/yyyy
 	 * @param date
 	 * @return
 	 */
-	public static String standardFromDate(final Date date) {
+	@SuppressWarnings("deprecation")
+	public static String getNextWorkingDay(final String date) {
 		Calendar cal = Calendar.getInstance();
-		cal.setTime( date );
+		cal.setTime( new Date( date ) );
+
+		do {
+			cal.add( Calendar.DAY_OF_MONTH, +1 );
+		} while (ParseDate.isHoliday( cal ));
 
 		return String.format( "%s/%s/%d", fillDigitalString( cal.get( Calendar.MONTH ) + 1 ),
 				fillDigitalString( cal.get( Calendar.DATE ) ),
@@ -248,13 +292,11 @@ public class ParseDate {
 	 * @return
 	 */
 	@SuppressWarnings("deprecation")
-	public static String getNextWorkingDay(final String date) {
+	public static String getNextDay(final String date) {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime( new Date( date ) );
 
-		do {
-			cal.add( Calendar.DAY_OF_MONTH, +1 );
-		} while (ParseDate.isHoliday( cal ));
+		cal.add( Calendar.DAY_OF_MONTH, +1 );
 
 		return String.format( "%s/%s/%d", fillDigitalString( cal.get( Calendar.MONTH ) + 1 ),
 				fillDigitalString( cal.get( Calendar.DATE ) ),
@@ -305,7 +347,7 @@ public class ParseDate {
 		cal.setTime( new Date( date ) );
 		return isHoliday( cal );
 	}
-	
+
 	public static boolean isHoliday(final Calendar cal) {
 		final int year = cal.get( Calendar.YEAR );
 		final int month = cal.get( Calendar.MONTH ) + 1;
@@ -374,8 +416,11 @@ public class ParseDate {
 
 		System.out.println( twoDaysLater );
 		System.out.println( compare( twoDaysLater, twoDaysLater ) == 0 );
+
+		System.out.println( isHoliday( standardFromLong( 20161225 ) ) );
 		
-		
-		System.out.println(isHoliday( standardFromLong( 20161225 )));
+		System.out.println(yyyyBMMBddddFromStandard( "05/15/2014" ));
+		System.out.println(SQLDateFromStandard( "05/20/2014" ));
 	}
+
 }

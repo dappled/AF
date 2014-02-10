@@ -14,6 +14,8 @@ public class ImporterManager {
 	private static boolean		_wipe	= false;
 
 	public static void main(final String[] args) throws Exception {
+		// don't import on holiday, b/c it will be imported next weekday
+		if (ParseDate.isHoliday( ParseDate.today )) return;
 		ImporterManager.parseArgs( args );
 		// System.out.println(reader.getDate(gsFile));
 		ImporterManager._importer.dump( ImporterManager._brokerFile, _dbName, ParseDate.today, _wipe );
@@ -66,6 +68,10 @@ public class ImporterManager {
 					// consolidated trade blotter
 					else if (args[i].equals( "consolidated" )) {
 						_importer = new ConsolidatedImporter(_dbServer, _catalog);
+					}
+					// gsec postion
+					else if (args[i].equals( "gsecPositions" )) {
+						_importer = new GsecPositions(_dbServer, _dbName);
 					}
 					else throw new Exception( "ImporterManager: /type argument unsopported: " + args[i] );
 					break;

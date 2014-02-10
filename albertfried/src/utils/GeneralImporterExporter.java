@@ -55,27 +55,22 @@ public abstract class GeneralImporterExporter {
 		Calendar cal = Calendar.getInstance();
 		String query;
 		// wipe today's previous import if exists (so we won't import twice for today)
-		if (!dbName.equals( "[Clearing].[dbo].[GSECPositions]" )) {
-			cal.setTime( new Date() );
-			query = "delete"
-					+ " from " + dbName + " where [ImportedDate]=cast('" + ParseDate.standardFromDate( cal.getTime() )
-					+ "' AS DATE)";
 
-			try (Statement stmt = _conn.createStatement()) {
+		cal.setTime( new Date() );
+		query = "delete" + " from " + dbName + " where [ImportedDate]=cast('" + ParseDate.standardFromDate( cal.getTime() ) + "' AS DATE)";
 
-				stmt.executeUpdate( query );
-				// System.out.println(re);
-			} catch (SQLException e) {
-				System.err.println( "Fail to wipe data from " + dbName + " for dates on "
-						+ ParseDate.standardFromDate( cal.getTime() ) );
-			}
+		try (Statement stmt = _conn.createStatement()) {
+
+			stmt.executeUpdate( query );
+			// System.out.println(re);
+		} catch (SQLException e) {
+			System.err.println( "Fail to wipe data from " + dbName + " for dates on "
+					+ ParseDate.standardFromDate( cal.getTime() ) );
 		}
 
 		// wipe data one week older
 		cal.add( Calendar.DAY_OF_MONTH, -7 );
-		query = "delete"
-				+ " from " + dbName + " where [ImportedDate]<=cast('" + ParseDate.standardFromDate( cal.getTime() )
-				+ "' AS DATE)";
+		query = "delete" + " from " + dbName + " where [ImportedDate]<=cast('" + ParseDate.standardFromDate( cal.getTime() ) + "' AS DATE)";
 		try (Statement stmt = _conn.createStatement()) {
 			stmt.executeUpdate( query );
 			// System.out.println(re);

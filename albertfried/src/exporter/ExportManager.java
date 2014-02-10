@@ -15,6 +15,8 @@ public class ExportManager {
 	private static String		_ftpAddress;
 
 	public static void main(final String[] args) throws Exception {
+		// don't export on holiday, b/c it will be exported next weekday
+		if (ParseDate.isHoliday( ParseDate.today )) return;
 		ExportManager.parseArgs( args );
 		ExportManager._exporter.report( ExportManager._outFile, ParseDate.today, _ftpAddress );
 		// send the reports using email if provided

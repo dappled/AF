@@ -12,10 +12,10 @@ import org.apache.poi.ss.usermodel.Workbook;
  * @author Zhenghong Dong
  */
 public class PMDailyDifference extends PMAbstract {
-	private final float	_difference;
-	private final float	_requirementToday, _requirementYesterday;
+	private final double	_difference;
+	private final double	_requirementToday, _requirementYesterday;
 
-	public PMDailyDifference(String importDate, String symbol, float requirementToday, float requirementYesterday, float difference) {
+	public PMDailyDifference(String importDate, String symbol, double requirementToday, double requirementYesterday, double difference) {
 		super( importDate, symbol );
 		_difference = difference;
 		_requirementToday = requirementToday;
@@ -43,15 +43,15 @@ public class PMDailyDifference extends PMAbstract {
 		return 4;
 	}
 
-	public float getDifference() {
+	public double getDifference() {
 		return _difference;
 	}
 
-	public float getRequirementToday() {
+	public double getRequirementToday() {
 		return _requirementToday;
 	}
 
-	public float getRequirementYesterday() {
+	public double getRequirementYesterday() {
 		return _requirementYesterday;
 	}
 

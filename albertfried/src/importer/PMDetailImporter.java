@@ -62,19 +62,19 @@ public class PMDetailImporter extends ImporterBase {
 					} else {
 						insertPMDetail.setDate( 6, java.sql.Date.valueOf( list[ 19 ].trim()+"-"+list[ 20 ].trim()+"-"+list[ 21 ].trim()) ); // Maturity
 					}
-					insertPMDetail.setFloat( 7, Float.parseFloat( list[ 22 ].trim() ) ); // strike
-					insertPMDetail.setFloat( 8, Float.parseFloat( list[ 23 ].trim() ) ); // quantity
-					insertPMDetail.setFloat( 9, Float.parseFloat( list[ 24 ].trim() ) ); // price
-					insertPMDetail.setFloat( 10, Float.parseFloat( list[ 25 ].trim() ) ); // down5	
-					insertPMDetail.setFloat( 11, Float.parseFloat( list[ 26 ].trim() ) ); // down4
-					insertPMDetail.setFloat( 12, Float.parseFloat( list[ 27 ].trim() ) ); // down3
-					insertPMDetail.setFloat( 13, Float.parseFloat( list[ 28 ].trim() ) ); // down2
-					insertPMDetail.setFloat( 14, Float.parseFloat( list[ 29 ].trim() ) ); // down1
-					insertPMDetail.setFloat( 15, Float.parseFloat( list[ 30 ].trim() ) ); // up1
-					insertPMDetail.setFloat( 16, Float.parseFloat( list[ 31 ].trim() ) ); // up2
-					insertPMDetail.setFloat( 17, Float.parseFloat( list[ 32 ].trim() ) ); // up3
-					insertPMDetail.setFloat( 18, Float.parseFloat( list[ 33 ].trim() ) ); // up4
-					insertPMDetail.setFloat( 19, Float.parseFloat( list[ 34 ].trim() ) ); // up5
+					insertPMDetail.setDouble( 7, Double.parseDouble( list[ 22 ].trim() ) ); // strike
+					insertPMDetail.setDouble( 8, Double.parseDouble( list[ 23 ].trim() ) ); // quantity
+					insertPMDetail.setDouble( 9, Double.parseDouble( list[ 24 ].trim() ) ); // price
+					insertPMDetail.setDouble( 10, Double.parseDouble( list[ 25 ].trim() ) ); // down5	
+					insertPMDetail.setDouble( 11, Double.parseDouble( list[ 26 ].trim() ) ); // down4
+					insertPMDetail.setDouble( 12, Double.parseDouble( list[ 27 ].trim() ) ); // down3
+					insertPMDetail.setDouble( 13, Double.parseDouble( list[ 28 ].trim() ) ); // down2
+					insertPMDetail.setDouble( 14, Double.parseDouble( list[ 29 ].trim() ) ); // down1
+					insertPMDetail.setDouble( 15, Double.parseDouble( list[ 30 ].trim() ) ); // up1
+					insertPMDetail.setDouble( 16, Double.parseDouble( list[ 31 ].trim() ) ); // up2
+					insertPMDetail.setDouble( 17, Double.parseDouble( list[ 32 ].trim() ) ); // up3
+					insertPMDetail.setDouble( 18, Double.parseDouble( list[ 33 ].trim() ) ); // up4
+					insertPMDetail.setDouble( 19, Double.parseDouble( list[ 34 ].trim() ) ); // up5
 					insertPMDetail.executeUpdate();
 					_conn.commit();
 					count++;

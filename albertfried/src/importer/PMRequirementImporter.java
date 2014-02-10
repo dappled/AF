@@ -19,8 +19,7 @@ public class PMRequirementImporter extends ImporterBase {
 	@Override
 	protected void dumpHelper(String localFile, String dbName, String tradeDate) throws Exception {
 		PreparedStatement insertRequirement = null;
-		String insertString = "insert into " + dbName
-				+ " (ImportedDate,Symbol,SymbolType,Requirement,Risk,Minimum) values (cast('"
+		String insertString = "insert into " + dbName + " (ImportedDate,Symbol,SymbolType,Requirement,Risk,Minimum) values (cast('"
 				+ tradeDate + "' as Date),?,?,?,?,?)";
 
 		BufferedReader reader = null;
@@ -48,9 +47,9 @@ public class PMRequirementImporter extends ImporterBase {
 					// insert into database
 					insertRequirement.setString( 1, list[ 14 ].trim() ); // symbol
 					insertRequirement.setString( 2, list[ 15 ].trim() ); // symbolType
-					insertRequirement.setFloat( 3, Float.parseFloat( list[ 16 ].trim() ) ); // requirement
-					insertRequirement.setFloat( 4, Float.parseFloat( list[ 17 ].trim() ) ); // risk
-					insertRequirement.setFloat( 5, Float.parseFloat( list[ 18 ].trim() ) ); // minimum
+					insertRequirement.setDouble( 3, Double.parseDouble( list[ 16 ].trim() ) ); // requirement
+					insertRequirement.setDouble( 4, Double.parseDouble( list[ 17 ].trim() ) ); // risk
+					insertRequirement.setDouble( 5, Double.parseDouble( list[ 18 ].trim() ) ); // minimum
 					insertRequirement.executeUpdate();
 					_conn.commit();
 					count++;

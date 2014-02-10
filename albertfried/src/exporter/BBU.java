@@ -90,7 +90,10 @@ public class BBU extends ExporterBase {
 	private List<PortfolioElement> getPortfolioElement() {
 		List<PortfolioElement> options = new ArrayList<>();
 		final String query = "SELECT * from clearing.dbo.GSECPos_For_Blmbrg";
-
+		//final String query = "SELECT * from clearing.dbo.GSECPos_For_Blmbrg " +
+		//"where tradingsymbol in  (SELECT [Symbol] " +
+		//  "FROM [Clearing].[dbo].[AccountToMicrohedgeAccount_Map] "+
+		//  "where UserAccount = 'ENG' and Account = 'AHLX1209')"; 
 		try (Statement stmt = _conn.createStatement()) {
 
 			ResultSet rs = stmt.executeQuery( query );

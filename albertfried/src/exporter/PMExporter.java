@@ -29,8 +29,8 @@ import dataWrapper.exporter.portfolioMargin.PMDailyRecord;
  * @author Zhenghong Dong
  */
 public class PMExporter extends ExporterBase {
-	Map<String, PMDailyAnalysis> _analysis;
-	
+	Map<String, PMDailyAnalysis>	_analysis;
+
 	public PMExporter(String dbServer, String catalog) {
 		super( dbServer, catalog );
 		_analysis = new LinkedHashMap<>();
@@ -43,7 +43,7 @@ public class PMExporter extends ExporterBase {
 
 		// generate detail analysis
 		List<PMAbstract> detailList = getDetail( today );
-		
+
 		// generate rank list
 		List<PMAbstract> rankList = getRank( today );
 
@@ -60,7 +60,7 @@ public class PMExporter extends ExporterBase {
 				"where importedDate = cast('" + today + "' as Date)) as today " +
 				"full outer join " +
 				"(select Symbol, Requirement from [Clearing].[dbo].[PMRequirement] " +
-				"where importedDate = Trading.dbo.GetPrevTradeDate(1)) as yesterday " +
+				"where importedDate = cast('" + ParseDate.getPreviousWorkingDay( today ) + "' as Date)) as yesterday " +
 				"on today.Symbol = yesterday.Symbol)) as tmp " +
 				"where tmp.Change <> 0 " +
 				"order by Change desc";
@@ -71,9 +71,9 @@ public class PMExporter extends ExporterBase {
 			while (rs.next()) {
 				diffList.add( new PMDailyDifference( today, // importedDate
 						rs.getString( 1 ), // symbol
-						rs.getFloat( 2 ), // requirementToday
-						rs.getFloat( 3 ), // requirementYesterday
-						rs.getFloat( 4 ) ) ); // requirementChange
+						rs.getDouble( 2 ), // requirementToday
+						rs.getDouble( 3 ), // requirementYesterday
+						rs.getDouble( 4 ) ) ); // requirementChange
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -98,13 +98,13 @@ public class PMExporter extends ExporterBase {
 				record = new PMDailyRecord( today, // importedDate
 						rs.getString( 1 ).trim(), // symbol
 						rs.getString( 2 ).trim(), // symbolType
-						rs.getFloat( 3 ), // requirement
-						rs.getFloat( 4 ), // risk
-						rs.getFloat( 5 ) ); // minimum
-				if ((res = _analysis.get( record.getSymbol())) != null ) {
+						rs.getDouble( 3 ), // requirement
+						rs.getDouble( 4 ), // risk
+						rs.getDouble( 5 ) ); // minimum
+				if ((res = _analysis.get( record.getSymbol() )) != null) {
 					record.setReason( res.getReason() );
 				}
-				rankList.add( record);
+				rankList.add( record );
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -117,18 +117,33 @@ public class PMExporter extends ExporterBase {
 	 * @throws Exception
 	 */
 	private List<PMAbstract> getDetail(String today) throws Exception {
-		// get all PM's detail report with whose symbol's requirement = risk on today
-		final String query = "SELECT t2.SymbolType,t1.ClassGroupId, t1.productgroupid, t2.Symbol, t1.Symbol, [Maturity],[putCall],[Strike],[Quantity],[Price] " +
-				",Down5, Down4, Down3, Down2, Down1 " +
-				",up1, up2, up3, Up4, Up5, Requirement, Risk " +
-				"FROM " +
-				"(select * from [Clearing].[dbo].[PMDetail] " +
-				"where ImportedDate = CAST('" + today + "' as DATE)) as t1 " +
-				"join " +
-				"(select Symbol, SymbolType, Requirement, Risk " +
-				"from Clearing.dbo.PMRequirement " +
-				"where ImportedDate = CAST('" + today + "' as DATE)) as t2 " +
-				"on t2.Symbol = t1.ClassGroupId or t2.Symbol = t1.ProductGroupId or (t1.ProductGroupId not in ('00999','00006','00015','00068','00076','00081','00099','00522','00523') and t2.Symbol = 'usidx') " +
+		// get all PM's detail report whose symbol's requirement = risk on today
+		final String query = "SELECT t2.SymbolType,t1.ClassGroupId, t1.productgroupid, t2.Symbol, t1.Symbol, [Maturity],[putCall],[Strike],[Quantity],[Price] "
+				+
+				",Down5, Down4, Down3, Down2, Down1 "
+				+
+				",up1, up2, up3, Up4, Up5, Requirement, Risk "
+				+
+				"FROM "
+				+
+				"(select * from [Clearing].[dbo].[PMDetail] "
+				+
+				"where ImportedDate = CAST('"
+				+ today
+				+ "' as DATE)) as t1 "
+				+
+				"join "
+				+
+				"(select Symbol, SymbolType, Requirement, Risk "
+				+
+				"from Clearing.dbo.PMRequirement "
+				+
+				"where ImportedDate = CAST('"
+				+ today
+				+ "' as DATE)) as t2 "
+				+
+				"on t2.Symbol = t1.ClassGroupId or t2.Symbol = t1.ProductGroupId or (t1.ProductGroupId not in ('00999','00006','00015','00068','00076','00081','00099','00522','00523') and t2.Symbol = 'usidx') "
+				+
 				"order by Requirement desc";
 
 		try (Statement stmt = _conn.createStatement()) {
@@ -136,8 +151,8 @@ public class PMExporter extends ExporterBase {
 			PMDailyDetail detail = null;
 			// this is the actual "symbol", if its product then use productGroupId, if class then use classGroupId, if O then symbol should SPY in detail
 			// and USIDX in requirement
-			String id = null; 
-			
+			String id = null;
+
 			while (rs.next()) {
 				switch (rs.getString( 1 ).trim()) {
 					case "C":
@@ -150,7 +165,7 @@ public class PMExporter extends ExporterBase {
 						id = rs.getString( 4 ).trim(); // use USIDX as id
 						break;
 					default:
-						throw new Exception("PMExporter: PM record symbol type should be on of C/P/O");
+						throw new Exception( "PMExporter: PM record symbol type should be on of C/P/O" );
 				}
 				int i = 4; // make life easier when add new fields
 				detail = new PMDailyDetail( today, // importedDate
@@ -159,22 +174,22 @@ public class PMExporter extends ExporterBase {
 						rs.getString( i++ ).trim(), // ticker symbol
 						ParseDate.standardFromSQLDate( rs.getDate( i++ ) ), // maturity
 						rs.getString( i++ ).trim(), // putCall
-						rs.getFloat( i++ ), // strike
-						rs.getFloat( i++ ), // quantity
-						rs.getFloat( i++ ), // price
-						rs.getFloat( i++ ), // down5
-						rs.getFloat( i++ ), // down4
-						rs.getFloat( i++ ), // down3
-						rs.getFloat( i++ ), // down2
-						rs.getFloat( i++ ), // down1
-						rs.getFloat( i++ ), // up1
-						rs.getFloat( i++ ), // up2
-						rs.getFloat( i++ ), // up3
-						rs.getFloat( i++ ), // up4
-						rs.getFloat( i++ ) ); // up5
+						rs.getDouble( i++ ), // strike
+						rs.getDouble( i++ ), // quantity
+						rs.getDouble( i++ ), // price
+						rs.getDouble( i++ ), // down5
+						rs.getDouble( i++ ), // down4
+						rs.getDouble( i++ ), // down3
+						rs.getDouble( i++ ), // down2
+						rs.getDouble( i++ ), // down1
+						rs.getDouble( i++ ), // up1
+						rs.getDouble( i++ ), // up2
+						rs.getDouble( i++ ), // up3
+						rs.getDouble( i++ ), // up4
+						rs.getDouble( i++ ) ); // up5
 				// if this symbol is already in the map, add it the to analysis
 				if (!_analysis.containsKey( id )) {
-					_analysis.put( id, new PMDailyAnalysis( today, id, rs.getFloat( i++ ), rs.getFloat(  i++ ) ) );
+					_analysis.put( id, new PMDailyAnalysis( today, id, rs.getDouble( i++ ), rs.getDouble( i++ ) ) );
 				}
 				_analysis.get( id ).add( detail );
 			}

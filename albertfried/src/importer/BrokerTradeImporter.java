@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
+ * not been used yet
  * @author Zhenghong Dong
  */
 public class BrokerTradeImporter extends ImporterBase {
@@ -23,8 +24,7 @@ public class BrokerTradeImporter extends ImporterBase {
 	protected void dumpHelper(String localFile, String dbName, String tradeDate) throws Exception {
 		PreparedStatement insertBrokerTrade = null;
 		PreparedStatement searchBrokerTrade = null;
-		String searchString = "select * from "
-				+ dbName
+		String searchString = "select * from " + dbName
 				+ " where TradeDate = ? and Symbol = ? and Maturity = ? and StrikePrice = ? and CallPut = ? and Side = ? and Quantity = ? and AvgPrice = ? and Broker = ?";
 		String insertString = "insert into " + dbName + " (Symbol,Maturity,StrikePrice,CallPut,Side, Quantity,AvgPrice,Broker) values (?,?,?,?,?,?,?,?)";
 

@@ -13,16 +13,16 @@ import org.apache.poi.ss.usermodel.Workbook;
  */
 public class PMDailyDetail extends PMAbstract {
 	private final String	_id, _ticker, _maturity, _putCall;
-	private final float		_strike, _quantity, _price;
-	private final float[]	_movements	= new float[ 10 ];
+	private final double	_strike, _quantity, _price;
+	private final double[]	_movements	= new double[ 10 ];
 
 	/**
 	 * @param date
 	 * @param symbol
 	 * @param requirement
 	 */
-	public PMDailyDetail(String date, String id, String symbol, String ticker, String mat, String putCall, float strike, float qty, float price, float down5, float down4, float down3,
-			float down2, float down1, float up1, float up2, float up3, float up4, float up5) {
+	public PMDailyDetail(String date, String id, String symbol, String ticker, String mat, String putCall, double strike, double qty, double price,
+			double down5, double down4, double down3, double down2, double down1, double up1, double up2, double up3, double up4, double up5) {
 		super( date, symbol );
 		_id = id;
 		_ticker = ticker;
@@ -100,26 +100,26 @@ public class PMDailyDetail extends PMAbstract {
 		return _maturity;
 	}
 
-	public float getStrike() {
+	public double getStrike() {
 		return _strike;
 	}
 
-	public float getQuantity() {
+	public double getQuantity() {
 		return _quantity;
 	}
 
-	public float getPrice() {
+	public double getPrice() {
 		return _price;
 	}
 
-	public float[] getMovements() {
+	public double[] getMovements() {
 		return _movements;
 	}
 
 	public String getPutCall() {
 		return _putCall;
 	}
-	
+
 	public String getId() {
 		return _id;
 	}

@@ -12,7 +12,7 @@ import org.apache.poi.ss.usermodel.Workbook;
  * @author Zhenghong Dong
  */
 public class PMDailyRecord extends PMAbstract {
-	private final float		_risk, _minimum, _requirement;
+	private final double	_risk, _minimum, _requirement;
 	private String			_reason;
 	private final String	_symbolType;
 
@@ -21,7 +21,7 @@ public class PMDailyRecord extends PMAbstract {
 	 * @param symbol
 	 * @param requirement
 	 */
-	public PMDailyRecord(String date, String symbol, String symbolType, float requirement, float risk, float minimum) {
+	public PMDailyRecord(String date, String symbol, String symbolType, double requirement, double risk, double minimum) {
 		super( date, symbol );
 		_symbolType = symbolType;
 		_risk = risk;
@@ -52,15 +52,15 @@ public class PMDailyRecord extends PMAbstract {
 		return 5;
 	}
 
-	public float getMinumum() {
+	public double getMinumum() {
 		return _minimum;
 	}
 
-	public float getRisk() {
+	public double getRisk() {
 		return _risk;
 	}
 
-	public float getRequirement() {
+	public double getRequirement() {
 		return _requirement;
 	}
 

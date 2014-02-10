@@ -19,10 +19,10 @@ public class ConsolidatedImporter extends ImporterBase {
 	}
 
 	@Override
-	protected void dumpHelper(String localName, String importName, String tradeDate) throws Exception {
+	protected void dumpHelper(String localFile, String dbName, String tradeDate) throws Exception {
 		PreparedStatement importTrade = null;
-		String searchString = "select * from " + localName;
-		String insertString = "insert into " + importName
+		String searchString = "select * from " + localFile;
+		String insertString = "insert into " + dbName
 				+ " (Symbol,Account,TradeDate,Side,Quantity,Price,UnderlyingSymbol,ExpirationDate,Strike,CallPut,RootCode,Description,Commission) values (?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 		try {
