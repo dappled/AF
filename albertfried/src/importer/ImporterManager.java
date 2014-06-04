@@ -33,7 +33,8 @@ public class ImporterManager {
 				case "/brokerFile":
 					ImporterManager._brokerFile = args[ ++i ];
 					if (ImporterManager._brokerFile.startsWith( "c:\\" )) {
-						ImporterManager._brokerFile = ImporterManager._brokerFile.replace( "[yyyyMMdd]",ParseDate.yyyyMMddFromStandard( ParseDate.yesterday ) );
+						ImporterManager._brokerFile = ImporterManager._brokerFile
+								.replace("[yyyyMMdd]", ParseDate.yyyyMMddFromStandard(ParseDate.GSECyesterday ) );
 					}
 					break;
 				case "/dbName":

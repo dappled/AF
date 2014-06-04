@@ -51,7 +51,7 @@ public class ActivityValidator extends ValidatorBase {
 						"ActivityValidator: TrdFile corrupted, inapproporate line: " + line );
 				else {
 					// add new record
-					final BrokerActivity record = brokerGetActivity( list );
+					final BrokerActivity record = brokerGetActivity( list ); 
 					final RecordKey key = new RecordKey( record );
 					// combine records with same (symbol, type, tradeDate, side) pair
 					if ((key._type.equals( "equity" ) || key._type.equals( "option" ))
@@ -163,7 +163,7 @@ public class ActivityValidator extends ValidatorBase {
 				final String description = list[ 6 ].trim();
 				String type = (symbol.split( " " ).length == 1) ? "equity" : "option";
 				type += (description.contains( "Exercise" ) || description.contains( "Assignment" ) || description.contains( "SA" ) || description
-						.contains( "OA" )) ? ("," + description) : "";
+						.contains( "OA" ) || description.contains("SE") || description.contains("OE")) ? ("," + description) : "";
 				final String side = list[ 3 ].trim();
 				final double price = Double.parseDouble( list[ 5 ].trim() );
 				final int qty = summaryGetQty( side, Integer.parseInt( list[ 4 ].trim() ) );

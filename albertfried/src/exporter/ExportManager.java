@@ -9,6 +9,7 @@ public class ExportManager {
 	private static String		_emailAddress	= null;
 	private static String		_mailSubject;
 	private static String		_outFile;
+	private static String		_inFile;
 	private static ExporterBase	_exporter;
 	private static String		_dbServer;
 	private static String		_catalog;
@@ -18,7 +19,7 @@ public class ExportManager {
 		// don't export on holiday, b/c it will be exported next weekday
 		if (ParseDate.isHoliday( ParseDate.today )) return;
 		ExportManager.parseArgs( args );
-		ExportManager._exporter.report( ExportManager._outFile, ParseDate.today, _ftpAddress );
+		ExportManager._exporter.report( _inFile, _outFile, ParseDate.today, _ftpAddress );
 		// send the reports using email if provided
 		if (_emailAddress != null) {
 			_exporter.sendEMail( _outFile, _mailSubject, _emailAddress, ParseDate.MMddyyyyFromStandard( ParseDate.yesterday ) );
@@ -42,9 +43,12 @@ public class ExportManager {
 				case "/outFile":
 					ExportManager._outFile = args[ ++i ];
 					if (ExportManager._outFile.startsWith( "c:\\" )) {
-						ExportManager._outFile = ExportManager._outFile.replace( "[MMddyyyy]",
-								ParseDate.MMddyyyyFromStandard( ParseDate.yesterday ) );
+						ExportManager._outFile = ExportManager._outFile.replace( "[MMddyyyy]",ParseDate.MMddyyyyFromStandard( ParseDate.yesterday ) );
 					}
+					break;
+				case "/inFile":
+					ExportManager._inFile = args[ ++i ];
+					ExportManager._inFile = ExportManager._inFile.replace( "[yyyyMMdd]",ParseDate.yyyyMMddFromStandard( ParseDate.yesterday ) );
 					break;
 				case "/dbserver":
 					_dbServer = args[ ++i ];

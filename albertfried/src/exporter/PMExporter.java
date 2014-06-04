@@ -37,7 +37,7 @@ public class PMExporter extends ExporterBase {
 	}
 
 	@Override
-	public void report(String outFile, final String today, final String ftpAddress) throws Exception {
+	public void report(String inFile, String outFile, final String today, final String ftpAddress) throws Exception {
 		// generate difference list
 		List<PMAbstract> diffList = getDifference( today );
 

@@ -55,7 +55,6 @@ public abstract class GeneralImporterExporter {
 		Calendar cal = Calendar.getInstance();
 		String query;
 		// wipe today's previous import if exists (so we won't import twice for today)
-
 		cal.setTime( new Date() );
 		query = "delete" + " from " + dbName + " where [ImportedDate]=cast('" + ParseDate.standardFromDate( cal.getTime() ) + "' AS DATE)";
 
@@ -85,8 +84,7 @@ public abstract class GeneralImporterExporter {
 	 * @param outFileName
 	 * @param addressList
 	 */
-	public void sendEMail(final String outFileName, final String mailSubject, final String addressList,
-			final String date) {
+	public void sendEMail(final String outFileName, final String mailSubject, final String addressList, final String date) {
 		final String username = "rn@albertfried.com";
 		final String password = "cljt123#";
 

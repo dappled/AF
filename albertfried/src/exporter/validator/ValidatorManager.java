@@ -8,9 +8,6 @@ public class ValidatorManager {
 	private static String			_brokerFile;
 	private static String			_outFile;
 	private static ValidatorBase	_validator;
-	// used for database search, database imported date will always be at today's date ( since they are imported every
-	// 5:00 AM ), but they are indeed yesterday's data.
-	// Update: "today"'s date should be the day after last non holiday weekday, so on Monday last day is Friday if Friday is not holiday
 	private static String			_date;
 	private static String			_mailSubject;
 	private static String			_dbServer;
@@ -46,14 +43,14 @@ public class ValidatorManager {
 					ValidatorManager._localFile = args[ ++i ];
 					if (ValidatorManager._localFile.startsWith( "c:\\" )) {
 						ValidatorManager._localFile = ValidatorManager._localFile.replace( "[MMddyyyy]",
-								ParseDate.MMddyyyyFromStandard( ParseDate.yesterday ) );
+								ParseDate.MMddyyyyFromStandard( ParseDate.GSECyesterday ) );
 					}
 					break;
 				case "/brokerFile":
 					ValidatorManager._brokerFile = args[ ++i ];
 					if (ValidatorManager._brokerFile.startsWith( "c:\\" )) {
 						ValidatorManager._brokerFile = ValidatorManager._brokerFile.replace( "[yyyyMMdd]",
-								ParseDate.yyyyMMddFromStandard( ParseDate.yesterday ) );
+								ParseDate.yyyyMMddFromStandard( ParseDate.GSECyesterday ) );
 					}
 					break;
 				case "/outFile":
@@ -74,7 +71,7 @@ public class ValidatorManager {
 					break;
 				case "/type":
 					if (args[ ++i ].equals( "activity" )) {
-						_date = ParseDate.yesterday;
+						_date = ParseDate.GSECyesterday;
 						ValidatorManager._validator = new ActivityValidator();
 						ValidatorManager._mailSubject = "ActivityMismatchReport";
 					}

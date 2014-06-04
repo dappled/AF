@@ -1,6 +1,7 @@
 package exporter;
 
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 import org.apache.commons.net.ftp.FTPClient;
@@ -28,7 +29,7 @@ public abstract class ExporterBase extends GeneralImporterExporter {
 	 * @param date
 	 * @throws Exception
 	 */
-	public abstract void report(final String outFile, final String date, final String ftpAddress) throws Exception;
+	public abstract void report(final String inFile, final String outFile, final String date, final String ftpAddress) throws Exception;
 
 	/**
 	 * Upload files to ftp
@@ -52,6 +53,7 @@ public abstract class ExporterBase extends GeneralImporterExporter {
 				return;
 			} else {
 				for (String file : outFile.split( ";" )) {
+					if (file.isEmpty()) continue;
 					fis = new FileInputStream( file );
 					//System.out.println( file.substring( file.lastIndexOf( "\\" ) + 1 ) );
 					upload = client.storeFile(file.substring( file.lastIndexOf( "\\" ) + 1 ), fis);
@@ -66,5 +68,50 @@ public abstract class ExporterBase extends GeneralImporterExporter {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	/**
+	 * download files from ftp to C:\Temp
+	 * @param outFile files to be downloaded, should be seperated by ; 
+	 * @param ftpAddress
+	 * @return 
+	 */
+	public String downloadFtp(String inFile, String ftpAddress, String ftpUserName, String ftpPassword) {
+		FTPClient client = new FTPClient();
+		String re = null;
+		
+		int reply;
+		try {
+			client.connect( ftpAddress );
+			client.login( ftpUserName, ftpPassword );
+			reply = client.getReplyCode();
+
+			if (!FTPReply.isPositiveCompletion( reply )) {
+				client.disconnect();
+				System.err.println( "FTP server refused connection." );
+				return null;
+			} else {
+				for (String file : inFile.split( ";" )) {
+					if (file.isEmpty()) continue;
+					
+					String localName = String.format("C:\\Temp\\%s", file);
+					try (FileOutputStream fos = new FileOutputStream(localName)) {
+			          client.retrieveFile(file, fos);
+			          if (re == null) {
+			        	  re = localName;
+			          } else
+			        	  re = re + ";" + localName; 
+			          System.out.println("Download " + file + " successfully");
+			        } catch (IOException e) {
+			        	System.err.println("Fail to download " + file);
+			        }
+				}
+			}
+			client.logout();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return re;
 	}
 }

@@ -15,13 +15,15 @@ import org.joda.time.format.DateTimeFormatter;
  */
 public class ParseDate {
 	// last working day
-	public static String	yesterday			= getPreviousWorkingDay( standardFromDate( new Date() ) );
+	public static String	yesterday			= getPreviousWorkingDay(standardFromDate(new Date()));
+	// gsec's yesterday (might be holiday)
+	public static String	GSECyesterday		= getGSECyesterday();
 	// day after yesterday might not be today cuz yesterday is last working day. think about today is Monday
-	public static String	dayAfterYesterday	= getNextDay( yesterday );
+	public static String	dayAfterYesterday	= getNextDay(yesterday);
 	// today's date, usually used as importDate in database
-	public static String	today				= standardFromDate( new Date() );
+	public static String	today				= standardFromDate(new Date());
 	// two business days later
-	public static String	twoDaysLater		= getNextWorkingDay( getNextWorkingDay( standardFromDate( new Date() ) ) );
+	public static String	twoDaysLater		= getNextWorkingDay(getNextWorkingDay(standardFromDate(new Date())));
 
 	/**
 	 * Compare two string date in standard format
@@ -29,9 +31,9 @@ public class ParseDate {
 	 */
 	@SuppressWarnings("deprecation")
 	public static int compare(String date1, String date2) {
-		Date d1 = new Date( date1 );
-		Date d2 = new Date( date2 );
-		return d1.compareTo( d2 );
+		Date d1 = new Date(date1);
+		Date d2 = new Date(date2);
+		return d1.compareTo(d2);
 	}
 
 	/**
@@ -41,8 +43,8 @@ public class ParseDate {
 	 * @throws Exception
 	 */
 	public static LocalDate stringToDate(final String date) {
-		final DateTimeFormatter formatter = DateTimeFormat.forPattern( "yyyyMMdd" );
-		return formatter.parseLocalDate( date );
+		final DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyyMMdd");
+		return formatter.parseLocalDate(date);
 	}
 
 	/**
@@ -52,8 +54,8 @@ public class ParseDate {
 	 */
 	public static String todayString() {
 		String ret = LocalDate.now().toString();
-		ret = ret.replaceAll( "-", "" );
-		return ParseDate.standardFromyyyyMMdd( ret );
+		ret = ret.replaceAll("-", "");
+		return ParseDate.standardFromyyyyMMdd(ret);
 	}
 
 	/**
@@ -64,10 +66,10 @@ public class ParseDate {
 	 */
 	public static String standardFromyyyyMMdd(final String date) {
 		try {
-			return ParseDate.standardFromMMddyyyy( date.substring( 4, 8 ) + date.substring( 0, 4 ) );
+			return ParseDate.standardFromMMddyyyy(date.substring(4, 8) + date.substring(0, 4));
 		} catch (final Exception e) {
 			e.printStackTrace();
-			System.err.printf( "Failed to parse date to MM/dd/yyyy from %s, will return empty string\n", date );
+			System.err.printf("Failed to parse date to MM/dd/yyyy from %s, will return empty string\n", date);
 			return "";
 		}
 	}
@@ -80,13 +82,13 @@ public class ParseDate {
 	 */
 	public static String standardFromStringMonthTypeOne(final String date) {
 		try {
-			final String[] list = date.split( " " );
-			return ParseDate.fillDigitalString( ParseDate.getMonth( list[ 0 ] ) ) + "/"
-					+ fillDigitalString( Integer.parseInt( list[ 1 ].trim() ) ) + "/"
-					+ list[ 2 ].trim();
+			final String[] list = date.split(" ");
+			return ParseDate.fillDigitalString(ParseDate.getMonth(list[0])) + "/"
+					+ fillDigitalString(Integer.parseInt(list[1].trim())) + "/"
+					+ list[2].trim();
 		} catch (final Exception e) {
 			e.printStackTrace();
-			System.err.printf( "Failed to parse date to MM/dd/yyyy from %s, will return empty string\n", date );
+			System.err.printf("Failed to parse date to MM/dd/yyyy from %s, will return empty string\n", date);
 			return "";
 		}
 	}
@@ -99,13 +101,13 @@ public class ParseDate {
 	 */
 	public static String standardFromStringMonthTypeTwo(final String date) {
 		try {
-			final String[] list = date.split( " " );
-			return ParseDate.fillDigitalString( ParseDate.getMonth( list[ 1 ] ) ) + "/"
-					+ fillDigitalString( Integer.parseInt( list[ 0 ].trim().replaceAll( "[^\\d]", "" ) ) ) + "/"
-					+ list[ 2 ].trim();
+			final String[] list = date.split(" ");
+			return ParseDate.fillDigitalString(ParseDate.getMonth(list[1])) + "/"
+					+ fillDigitalString(Integer.parseInt(list[0].trim().replaceAll("[^\\d]", ""))) + "/"
+					+ list[2].trim();
 		} catch (final Exception e) {
 			e.printStackTrace();
-			System.err.printf( "Failed to parse date to MM/dd/yyyy from %s, will return empty string\n", date );
+			System.err.printf("Failed to parse date to MM/dd/yyyy from %s, will return empty string\n", date);
 			return "";
 		}
 	}
@@ -117,12 +119,12 @@ public class ParseDate {
 	 * @throws Exception
 	 */
 	public static String standardFromyyyyBMMBdddd(final String date) {
-		if (date == null || date.equals( "null" ) || date.equals( "" )) return date;
+		if (date == null || date.equals("null") || date.equals("")) return date;
 		try {
-			return ParseDate.standardFromyyyyMMdd( date.replace( "-", "" ) );
+			return ParseDate.standardFromyyyyMMdd(date.replace("-", ""));
 		} catch (final Exception e) {
 			e.printStackTrace();
-			System.err.printf( "Failed to parse date to MM/dd/yyyy from %s, will return empty string\n", date );
+			System.err.printf("Failed to parse date to MM/dd/yyyy from %s, will return empty string\n", date);
 			return "";
 		}
 	}
@@ -135,10 +137,10 @@ public class ParseDate {
 	 */
 	public static String standardFromMMddyyyy(final String date) {
 		try {
-			return date.substring( 0, 2 ) + "/" + date.substring( 2, 4 ) + "/" + date.substring( 4, 8 );
+			return date.substring(0, 2) + "/" + date.substring(2, 4) + "/" + date.substring(4, 8);
 		} catch (final Exception e) {
 			e.printStackTrace();
-			System.err.printf( "Failed to parse date to MM/dd/yyyy from %s, will return empty string\n", date );
+			System.err.printf("Failed to parse date to MM/dd/yyyy from %s, will return empty string\n", date);
 			return "";
 		}
 	}
@@ -150,7 +152,7 @@ public class ParseDate {
 	 */
 	public static String standardFromSQLDate(final java.sql.Date date) {
 		if (date == null) return null;
-		else return standardFromyyyyBMMBdddd( date.toString() );
+		else return standardFromyyyyBMMBdddd(date.toString());
 	}
 
 	/**
@@ -159,23 +161,24 @@ public class ParseDate {
 	 * @return
 	 */
 	public static String standardFromCal(Calendar calendar) {
-		return standardFromDate( calendar.getTime() );
+		return standardFromDate(calendar.getTime());
 	}
-	
+
 	/**
 	 * Given a {@link Date}, convert it to String format MM/dd/yyyy
 	 * @param date
 	 * @return
 	 */
 	public static String standardFromDate(final Date date) {
+		if (date == null) return null;
 		Calendar cal = Calendar.getInstance();
-		cal.setTime( date );
+		cal.setTime(date);
 
-		return String.format( "%s/%s/%d", fillDigitalString( cal.get( Calendar.MONTH ) + 1 ),
-				fillDigitalString( cal.get( Calendar.DATE ) ),
-				cal.get( Calendar.YEAR ) );
+		return String.format("%s/%s/%d", fillDigitalString(cal.get(Calendar.MONTH) + 1),
+				fillDigitalString(cal.get(Calendar.DATE)),
+				cal.get(Calendar.YEAR));
 	}
-	
+
 	/**
 	 * Convert standard date format MM/dd/yyyy to MMddyyyy, which will be used to find tradesummary file
 	 * @param date
@@ -184,10 +187,10 @@ public class ParseDate {
 	 */
 	public static String MMddyyyyFromStandard(final String date) {
 		try {
-			return date.replace( "/", "" );
+			return date.replace("/", "");
 		} catch (final Exception e) {
 			e.printStackTrace();
-			System.err.printf( "Failed to parse date to MMddyyyy from %s, will return empty string\n", date );
+			System.err.printf("Failed to parse date to MMddyyyy from %s, will return empty string\n", date);
 			return "";
 		}
 	}
@@ -200,11 +203,11 @@ public class ParseDate {
 	 */
 	public static String yyyyMMddFromStandard(String date) {
 		try {
-			date = date.replace( "/", "" );
-			return date.substring( 4, 8 ) + date.substring( 0, 4 );
+			date = date.replace("/", "");
+			return date.substring(4, 8) + date.substring(0, 4);
 		} catch (final Exception e) {
 			e.printStackTrace();
-			System.err.printf( "Failed to parse date to yyyyMMdd from %s, will return empty string\n", date );
+			System.err.printf("Failed to parse date to yyyyMMdd from %s, will return empty string\n", date);
 			return "";
 		}
 	}
@@ -218,10 +221,10 @@ public class ParseDate {
 	 */
 	public static String MMddFromStandard(final String date) {
 		try {
-			return date.replace( "/", "" ).substring( 0, 4 );
+			return date.replace("/", "").substring(0, 4);
 		} catch (final Exception e) {
 			e.printStackTrace();
-			System.err.printf( "Failed to parse date to MMdd from %s, will return empty string\n", date );
+			System.err.printf("Failed to parse date to MMdd from %s, will return empty string\n", date);
 			return "";
 		}
 	}
@@ -232,10 +235,10 @@ public class ParseDate {
 	 * @return
 	 */
 	public static java.sql.Date SQLDateFromStandard(String date) {
-		if (date == null || date.equals( "" )) return null;
-		else return (java.sql.Date.valueOf( ParseDate.yyyyBMMBddddFromStandard( date )));
+		if (date == null || date.equals("")) return null;
+		else return (java.sql.Date.valueOf(ParseDate.yyyyBMMBddddFromStandard(date)));
 	}
-	
+
 	/**
 	 * Convert date string from MM/dd/yyyy to yyyy-MM-dd, typically used for java.sql.date
 	 * @param date
@@ -243,17 +246,17 @@ public class ParseDate {
 	 * @throws Exception
 	 */
 	public static String yyyyBMMBddddFromStandard(final String date) {
-		if (date == null || date.equals( "null" )) return date;
+		if (date == null || date.equals("null")) return date;
 		try {
-			String ret = ParseDate.yyyyMMddFromStandard( date );
-			return ret.substring( 0, 4 ) + "-" + ret.substring( 4,6 ) + "-" + ret.substring( 6, 8 );
+			String ret = ParseDate.yyyyMMddFromStandard(date);
+			return ret.substring(0, 4) + "-" + ret.substring(4, 6) + "-" + ret.substring(6, 8);
 		} catch (final Exception e) {
 			e.printStackTrace();
-			System.err.printf( "Failed to parse date to MM/dd/yyyy from %s, will return empty string\n", date );
+			System.err.printf("Failed to parse date to MM/dd/yyyy from %s, will return empty string\n", date);
 			return "";
 		}
 	}
-	
+
 	/**
 	 * Simply convert month string to digital form
 	 * @param month String
@@ -261,8 +264,8 @@ public class ParseDate {
 	 * @throws Exception
 	 */
 	public static int getMonth(final String month) {
-		final DateTimeFormatter format = DateTimeFormat.forPattern( "MMM" );
-		final DateTime instance = format.parseDateTime( month );
+		final DateTimeFormatter format = DateTimeFormat.forPattern("MMM");
+		final DateTime instance = format.parseDateTime(month);
 
 		return instance.getMonthOfYear();
 	}
@@ -275,15 +278,15 @@ public class ParseDate {
 	@SuppressWarnings("deprecation")
 	public static String getNextWorkingDay(final String date) {
 		Calendar cal = Calendar.getInstance();
-		cal.setTime( new Date( date ) );
+		cal.setTime(new Date(date));
 
 		do {
-			cal.add( Calendar.DAY_OF_MONTH, +1 );
-		} while (ParseDate.isHoliday( cal ));
+			cal.add(Calendar.DAY_OF_MONTH, +1);
+		} while (ParseDate.isHoliday(cal));
 
-		return String.format( "%s/%s/%d", fillDigitalString( cal.get( Calendar.MONTH ) + 1 ),
-				fillDigitalString( cal.get( Calendar.DATE ) ),
-				cal.get( Calendar.YEAR ) );
+		return String.format("%s/%s/%d", fillDigitalString(cal.get(Calendar.MONTH) + 1),
+				fillDigitalString(cal.get(Calendar.DATE)),
+				cal.get(Calendar.YEAR));
 	}
 
 	/**
@@ -294,13 +297,13 @@ public class ParseDate {
 	@SuppressWarnings("deprecation")
 	public static String getNextDay(final String date) {
 		Calendar cal = Calendar.getInstance();
-		cal.setTime( new Date( date ) );
+		cal.setTime(new Date(date));
 
-		cal.add( Calendar.DAY_OF_MONTH, +1 );
+		cal.add(Calendar.DAY_OF_MONTH, +1);
 
-		return String.format( "%s/%s/%d", fillDigitalString( cal.get( Calendar.MONTH ) + 1 ),
-				fillDigitalString( cal.get( Calendar.DATE ) ),
-				cal.get( Calendar.YEAR ) );
+		return String.format("%s/%s/%d", fillDigitalString(cal.get(Calendar.MONTH) + 1),
+				fillDigitalString(cal.get(Calendar.DATE)),
+				cal.get(Calendar.YEAR));
 	}
 
 	/**
@@ -311,15 +314,32 @@ public class ParseDate {
 	@SuppressWarnings("deprecation")
 	public static String getPreviousWorkingDay(final String date) {
 		Calendar cal = Calendar.getInstance();
-		cal.setTime( new Date( date ) );
+		cal.setTime(new Date(date));
 
 		do {
-			cal.add( Calendar.DAY_OF_MONTH, -1 );
-		} while (ParseDate.isHoliday( cal ));
+			cal.add(Calendar.DAY_OF_MONTH, -1);
+		} while (ParseDate.isHoliday(cal));
 
-		return String.format( "%s/%s/%d", fillDigitalString( cal.get( Calendar.MONTH ) + 1 ),
-				fillDigitalString( cal.get( Calendar.DATE ) ),
-				cal.get( Calendar.YEAR ) );
+		return String.format("%s/%s/%d", fillDigitalString(cal.get(Calendar.MONTH) + 1),
+				fillDigitalString(cal.get(Calendar.DATE)),
+				cal.get(Calendar.YEAR));
+	}
+	
+
+	/**
+	 * @return the gsec's yesterday. For holiday on the day after they send all the files named as the holiday. (which should be the data for the day before)
+	 */
+	private static String getGSECyesterday() {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(new Date());
+		
+		do {
+			cal.add(Calendar.DAY_OF_MONTH, -1);
+		} while (ParseDate.isWeekend(cal));
+
+		return String.format("%s/%s/%d", fillDigitalString(cal.get(Calendar.MONTH) + 1),
+				fillDigitalString(cal.get(Calendar.DATE)),
+				cal.get(Calendar.YEAR));
 	}
 
 	/**
@@ -330,31 +350,30 @@ public class ParseDate {
 	@SuppressWarnings("deprecation")
 	public static int getNextFriday(final long date) {
 		Calendar cal = Calendar.getInstance();
-		cal.setTime( new Date( standardFromLong( date ) ) );
+		cal.setTime(new Date(standardFromLong(date)));
 
 		do {
-			cal.add( Calendar.DAY_OF_MONTH, +1 );
-		} while (cal.get( Calendar.DAY_OF_WEEK ) != Calendar.FRIDAY);
+			cal.add(Calendar.DAY_OF_MONTH, +1);
+		} while (cal.get(Calendar.DAY_OF_WEEK) != Calendar.FRIDAY);
 
-		return (cal.get( Calendar.MONTH ) + 1) * 100 +
-				cal.get( Calendar.DATE ) +
-				cal.get( Calendar.YEAR ) * 10000;
+		return (cal.get(Calendar.MONTH) + 1) * 100 +
+				cal.get(Calendar.DATE) +
+				cal.get(Calendar.YEAR) * 10000;
 	}
 
 	@SuppressWarnings("deprecation")
 	public static boolean isHoliday(final String date) {
 		Calendar cal = Calendar.getInstance();
-		cal.setTime( new Date( date ) );
-		return isHoliday( cal );
+		cal.setTime(new Date(date));
+		return isHoliday(cal);
 	}
 
 	public static boolean isHoliday(final Calendar cal) {
-		final int year = cal.get( Calendar.YEAR );
-		final int month = cal.get( Calendar.MONTH ) + 1;
-		final int dayOfMonth = cal.get( Calendar.DAY_OF_MONTH );
+		if (isWeekend(cal)) return true;
 
-		int dayOfWeek = cal.get( Calendar.DAY_OF_WEEK );
-		if (dayOfWeek == Calendar.SATURDAY || dayOfWeek == Calendar.SUNDAY) return true;
+		final int year = cal.get(Calendar.YEAR);
+		final int month = cal.get(Calendar.MONTH) + 1;
+		final int dayOfMonth = cal.get(Calendar.DAY_OF_MONTH);
 
 		if ((month == 12 && dayOfMonth == 25 && year == 2014) || (month == 1 && dayOfMonth == 1 && year == 2014) ||
 				(month == 2 && dayOfMonth == 17 && year == 2014) || (month == 4 && dayOfMonth == 18 && year == 2014) ||
@@ -374,6 +393,19 @@ public class ParseDate {
 		// more checks
 		return false;
 	}
+	
+	@SuppressWarnings("deprecation")
+	public static boolean isWeekend(final String date) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(new Date(date));
+		return isWeekend(cal);
+	}
+
+	public static boolean isWeekend(final Calendar cal) {
+		int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
+		if (dayOfWeek == Calendar.SATURDAY || dayOfWeek == Calendar.SUNDAY) return true;
+		return false;
+	}
 
 	/**
 	 * Get MM/dd/yyyy from digital yyyyMMdd
@@ -381,8 +413,8 @@ public class ParseDate {
 	 * @return
 	 */
 	public static String standardFromLong(long date) {
-		String d = String.valueOf( date );
-		return String.format( "%s/%s/%s", d.substring( 4, 6 ), d.substring( 6, 8 ), d.substring( 0, 4 ) );
+		String d = String.valueOf(date);
+		return String.format("%s/%s/%s", d.substring(4, 6), d.substring(6, 8), d.substring(0, 4));
 	}
 
 	/**
@@ -391,36 +423,36 @@ public class ParseDate {
 	 * @return
 	 */
 	public static long longFromStandard(String startDate) {
-		String[] date = startDate.split( "/" );
-		return Long.parseLong( date[ 2 ] ) * 10000 + Long.parseLong( date[ 0 ] ) * 100 + Long.parseLong( date[ 1 ] );
+		String[] date = startDate.split("/");
+		return Long.parseLong(date[2]) * 10000 + Long.parseLong(date[0]) * 100 + Long.parseLong(date[1]);
 	}
 
 	/** change x to 0x */
 	private static String fillDigitalString(final int month) {
 		final NumberFormat format = NumberFormat.getInstance();
-		format.setMinimumIntegerDigits( 2 );
-		return format.format( month );
+		format.setMinimumIntegerDigits(2);
+		return format.format(month);
 	}
 
 	public static void main(String[] args) {
 		long date = 19890515;
-		System.out.println( standardFromLong( date ) );
-		date = getNextFriday( date );
-		System.out.println( date );
-		date = getNextFriday( date );
-		System.out.println( date );
-		System.out.println( longFromStandard( standardFromLong( date ) ) );
+		System.out.println(standardFromLong(date));
+		date = getNextFriday(date);
+		System.out.println(date);
+		date = getNextFriday(date);
+		System.out.println(date);
+		System.out.println(longFromStandard(standardFromLong(date)));
 
 		String date2 = "1st September 2010";
-		System.out.println( standardFromStringMonthTypeTwo( date2 ) );
+		System.out.println(standardFromStringMonthTypeTwo(date2));
 
-		System.out.println( twoDaysLater );
-		System.out.println( compare( twoDaysLater, twoDaysLater ) == 0 );
+		System.out.println(twoDaysLater);
+		System.out.println(compare(twoDaysLater, twoDaysLater) == 0);
 
-		System.out.println( isHoliday( standardFromLong( 20161225 ) ) );
-		
-		System.out.println(yyyyBMMBddddFromStandard( "05/15/2014" ));
-		System.out.println(SQLDateFromStandard( "05/20/2014" ));
+		System.out.println(isHoliday(standardFromLong(20161225)));
+
+		System.out.println(yyyyBMMBddddFromStandard("05/15/2014"));
+		System.out.println(SQLDateFromStandard("05/20/2014"));
 	}
 
 }

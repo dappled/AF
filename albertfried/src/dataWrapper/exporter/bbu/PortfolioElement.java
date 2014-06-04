@@ -3,7 +3,6 @@ package dataWrapper.exporter.bbu;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.math.RoundingMode;
-import java.sql.Date;
 import java.text.DecimalFormat;
 
 import org.apache.poi.ss.usermodel.Row;
@@ -19,14 +18,12 @@ import dataWrapper.RealBasic;
  * @author Zhenghong Dong
  */
 public class PortfolioElement extends RealBasic {
-	private final float	_tdQty, _strike, _baseMarketPrice;
-	private final String	_putCall, _OCCCode, _account;
-	private final Date		_maturity;
+	private final Double	_tdQty, _strike, _baseMarketPrice;
+	private final String	_putCall, _OCCCode, _account, _type;
+	private final String	_maturity;
 
-	/**
-	 * @param symbol
-	 */
-	public PortfolioElement(String symbol, float tdQty, Date maturity, float strike, String putCall, float baseMarketPrice, String OCCCode, String account) {
+	public PortfolioElement(String symbol, Double tdQty, String maturity, Double strike, String putCall, Double baseMarketPrice, String OCCCode, String account,
+			String type) {
 		super( symbol );
 		_tdQty = tdQty;
 		_strike = strike;
@@ -35,6 +32,7 @@ public class PortfolioElement extends RealBasic {
 		_OCCCode = OCCCode;
 		_account = account;
 		_maturity = maturity;
+		_type = type;
 	}
 
 	@Override
@@ -47,8 +45,8 @@ public class PortfolioElement extends RealBasic {
 
 	@Override
 	public void writeCSV(FileWriter out) throws IOException {
-		if (bbgSymbol().contains( "TEST" )) return; //ignore test cases
-		out.append( "vineyard" );
+		if (bbgSymbol().contains( "TEST" )) return; // ignore test cases
+		out.append( _type );
 		out.append( ',' );
 		out.append( bbgSymbol() );
 		out.append( ',' );
@@ -69,27 +67,27 @@ public class PortfolioElement extends RealBasic {
 			if (getMaturity() == null) {
 				return getSymbol() + " US Equity";
 			} else {
-				return getSymbol() + " US " + ParseDate.standardFromDate( getMaturity() ) + " " + getPutCall()
+				return getSymbol() + " US " + getMaturity() + " " + getPutCall()
 						+ StringUtils.numberToStringWithoutZeros( getStrike() ) + " Equity";
 			}
 		}
 	}
 
 	public String round() {
-		DecimalFormat df = new DecimalFormat( "#.####" );
+		DecimalFormat df = new DecimalFormat( "#.##" ); // we only care abt minimum 1 penny
 		df.setRoundingMode( RoundingMode.UP );
 		return df.format( getBaseMarketPrice() );
 	}
 
-	public float getTDQty() {
+	public Double getTDQty() {
 		return _tdQty;
 	}
 
-	public float getStrike() {
+	public Double getStrike() {
 		return _strike;
 	}
 
-	public float getBaseMarketPrice() {
+	public Double getBaseMarketPrice() {
 		return _baseMarketPrice;
 	}
 
@@ -105,7 +103,7 @@ public class PortfolioElement extends RealBasic {
 		return _account;
 	}
 
-	public Date getMaturity() {
+	public String getMaturity() {
 		return _maturity;
 	}
 }

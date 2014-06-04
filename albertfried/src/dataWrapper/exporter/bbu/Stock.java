@@ -14,6 +14,12 @@ import dataWrapper.RealBasic;
  * @author Zhenghong Dong
  */
 public class Stock extends RealBasic {
+	private double _price;
+	private double _stkRate;
+	private double _vol;
+	private double _exAmt;
+	private String[] _exDate;
+
 	/**
 	 * @param symbol
 	 */
@@ -49,5 +55,36 @@ public class Stock extends RealBasic {
 	public String bbgSymbol() {
 		if (getSymbol().isEmpty()) return "ZVZZT US Equity";
 		return getSymbol() + " US Equity";
+	}
+	
+	public double getPrice() {
+		return _price;
+	}
+	public void setPrice(double price) {
+		this._price = price;
+	}
+	public double getStkRate() {
+		return _stkRate;
+	}
+	public void setStkRate(double stkRate) {
+		this._stkRate = stkRate;
+	}
+	public double getVol() {
+		return _vol;
+	}
+	public void setVol(double vol) {
+		this._vol = vol;
+	}
+	public double getExAmt() {
+		return _exAmt;
+	}
+	public void setExAmt(double exAmt) {
+		this._exAmt = exAmt;
+	}
+	public String[] getExDate() {
+		return _exDate;
+	}
+	public void setExDate(String[] exDate) {
+		this._exDate = exDate;
 	}
 }
